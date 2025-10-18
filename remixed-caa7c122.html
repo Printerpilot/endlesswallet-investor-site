@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endless Wallet - Next-Generation Peer-to-Peer Lending Infrastructure</title>
+    <meta name="description" content="Endless Wallet is building comprehensive peer-to-peer lending infrastructure with alternative credit assessment, secondary market liquidity, and global accessibility.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00C957;
+            --primary-dark: #00A844;
+            --bg-dark: #0f172a;
+            --bg-medium: #1e293b;
+            --border: #334155;
+            --text-gray: #94a3b8;
+            --text-light: #d1d5db;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif; 
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-medium) 50%, var(--bg-dark) 100%); 
+            color: white; 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        
+        /* Navigation */
+        .nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+            z-index: 100;
+        }
+        
+        .nav-left { display: flex; align-items: center; gap: 0.75rem; }
+        .logo { 
+            width: 2.5rem; 
+            height: 2.5rem; 
+            background: var(--primary); 
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+        .brand { font-size: 1.25rem; font-weight: 600; }
+        
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .nav-link { 
+            color: var(--text-gray); 
+            text-decoration: none; 
+            transition: color 0.2s; 
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .nav-link:hover { color: white; }
+        
+        .btn { 
+            padding: 0.625rem 1.25rem; 
+            border: 1px solid var(--primary); 
+            background: transparent; 
+            color: white; 
+            border-radius: 0.375rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-size: 0.95rem;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+        .btn:hover { background: rgba(0, 201, 87, 0.1); }
+        .btn-primary { 
+            background: var(--primary); 
+            color: #000; 
+            border: none; 
+            font-weight: 600; 
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+        
+        /* Hero Section */
+        .hero { 
+            padding: 6rem 0 5rem; 
+            text-align: center;
+        }
+        
+        .hero h1 { 
+            font-size: 3.5rem; 
+            font-weight: 700; 
+            margin-bottom: 1.5rem; 
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero .subtitle { 
+            font-size: 1.25rem; 
+            color: var(--text-gray); 
+            margin-bottom: 2.5rem; 
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        
+        .hero-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .hero-buttons .btn {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .stat-card { text-align: center; }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+        
+        .stat-number.wrap-text {
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+        }
+        
+        /* Sections */
+        section { 
+            padding: 5rem 0;
+            border-top: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+        
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 0.6);
+            box-shadow: 0 4px 20px rgba(0, 201, 87, 0.15);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+        
+        .feature-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        /* Problem/Solution */
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .problem-box, .solution-box {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 0.75rem;
+            padding: 2.5rem;
+        }
+        
+        .problem-box {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .solution-box {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .problem-box h3 {
+            color: #ef4444;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .solution-box h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .problem-box ul, .solution-box ul {
+            list-style: none;
+            space-y: 1rem;
+        }
+        
+        .problem-box li, .solution-box li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+        
+        .problem-box li:before {
+            content: "×";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        .solution-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Investment Highlights */
+        .investment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        .investment-card {
+            background: linear-gradient(135deg, rgba(0, 201, 87, 0.1) 0%, rgba(0, 201, 87, 0.05) 100%);
+            border: 1px solid rgba(0, 201, 87, 0.3);
+            border-radius: 0.75rem;
+            padding: 2.5rem;
+        }
+        
+        .investment-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .investment-card p {
+            font-size: 1rem;
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+        
+        .investment-card ul {
+            list-style: none;
+        }
+        
+        .investment-card li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        .investment-card li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Risk Disclaimer */
+        .risk-disclaimer {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .risk-disclaimer h3 {
+            color: #ef4444;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .risk-disclaimer p {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 1rem;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .cta-section h2 {
+            font-size: 2.5rem;
+            color: #000;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .cta-section p {
+            font-size: 1.125rem;
+            color: rgba(0, 0, 0, 0.7);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-section .btn {
+            background: #000;
+            color: var(--primary);
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        
+        .cta-section .btn:hover {
+            background: rgba(0, 0, 0, 0.85);
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(51, 65, 85, 0.3);
+            padding: 3rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo {
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            border-radius: 0.375rem;
+        }
+        
+        .footer-brand-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .footer-description {
+            color: var(--text-gray);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        .footer-section h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.625rem;
+        }
+        
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(51, 65, 85, 0.3);
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.25rem; }
+            .hero .subtitle { font-size: 1.05rem; }
+            .stats-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .problem-solution { grid-template-columns: 1fr; gap: 2rem; }
+            .investment-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; gap: 2rem; }
+            .nav-right { gap: 1rem; }
+            .nav-link { font-size: 0.875rem; }
+            section { padding: 4rem 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-left">
+            <div class="logo">EW</div>
+            <span class="brand">Endless Wallet</span>
+        </div>
+        <div class="nav-right">
+            <a href="#platform" class="nav-link">Platform</a>
+            <a href="#market" class="nav-link">Market</a>
+            <a href="#investment" class="nav-link">Investment</a>
+            <a href="mailto:investors@endlesswallet.com" class="btn btn-primary">Contact Us</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>
+                <span class="gradient-text">Next-Generation</span><br>
+                Peer-to-Peer Lending Infrastructure
+            </h1>
+            <p class="subtitle">
+                Endless Wallet is building comprehensive lending infrastructure that combines alternative credit assessment, 
+                flexible loan structures, and secondary market liquidity to democratize access to capital.
+            </p>
+            <div class="hero-buttons">
+                <a href="#investment" class="btn btn-primary">Investment Opportunity</a>
+                <a href="#platform" class="btn">Platform Overview</a>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">Sandbox</div>
+                    <div class="stat-label">Current Stage</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">Q2 2025</div>
+                    <div class="stat-label">Planned Launch</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number wrap-text">Infrastructural &<br>Regulatory Change</div>
+                    <div class="stat-label">Market Opportunity</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Opportunity -->
+    <section id="market">
+        <div class="container">
+            <div class="section-header">
+                <h2>Capitalizing on a New Opportunity</h2>
+                <p>Traditional credit infrastructure excludes millions while peer-to-peer lending remains fragmented and limited. We're building the comprehensive solution the market needs.</p>
+            </div>
+
+            <div class="problem-solution">
+                <div class="problem-box">
+                    <h3>Market Gaps</h3>
+                    <ul>
+                        <li>80 million Americans have poor or limited credit history</li>
+                        <li>Traditional P2P platforms focus only on high-credit borrowers</li>
+                        <li>No secondary market for loan notes limits liquidity</li>
+                        <li>Small businesses lack tools to finance customers</li>
+                        <li>Lack of solutions in the market for seamlessly extending credit to family</li>
+                        <li>Unbanked populations globally have no credit access</li>
+                        <li>FICO scores often misrepresent actual creditworthiness</li>
+                    </ul>
+                </div>
+                <div class="solution-box">
+                    <h3>Our Solution</h3>
+                    <ul>
+                        <li>Alternative credit scoring (FAP system) for holistic assessment</li>
+                        <li>Comprehensive loan structuring with flexible terms</li>
+                        <li>Note marketplace enabling loan trading and liquidity</li>
+                        <li>Tools for businesses to extend credit directly</li>
+                        <li>Multi-currency and crypto support for global access</li>
+                        <li>Social verification and relationship-based lending</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Features -->
+    <section id="platform">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comprehensive Lending Infrastructure</h2>
+                <p>Beyond simple loan matching—we're building end-to-end infrastructure for the future of peer-to-peer finance.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Alternative Credit Assessment</h3>
+                    <p>Financial Achievement Points (FAP) system evaluates creditworthiness beyond FICO—incorporating verified identity, social connections, net worth composition, and repayment history for holistic risk assessment.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Flexible Loan Structuring</h3>
+                    <p>Customizable terms including APR, repayment schedules, collateral requirements, governing law, and currency. Borrowers create detailed petitions; lenders negotiate directly.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Secondary Note Marketplace</h3>
+                    <p>Trade loan notes like securities. Sell full positions, partial stakes, or package multiple loans together. Creates liquidity in traditionally illiquid asset class.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Revolving Credit Lines</h3>
+                    <p>Extend credit lines to verified connections. Set limits, rates, and terms. Enables businesses to finance customers and families to support each other financially.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Multi-Currency & Crypto Support</h3>
+                    <p>Lend and borrow in USD, EUR, GBP, plus USDC, USDT, BTC, and ETH. Removes geographic barriers and serves global, unbanked populations.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Automated Contract Generation</h3>
+                    <p>E-signature integration via HelloSign. Customizable legal templates. Jurisdiction selection. Creates enforceable agreements with automated tracking and notifications.</p>
+                </div>
+            </div>
+
+            <div class="risk-disclaimer">
+                <h3>Important Note on Risk</h3>
+                <p>Peer-to-peer lending involves substantial risk of loss. The platform is currently in sandbox/pre-launch stage with no operational history. Investors should only invest capital they can afford to lose and should diversify across multiple loans to manage risk once the platform launches.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology & Approach -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2>Built for Scale and Compliance</h2>
+                <p>Enterprise-grade infrastructure designed for regulatory compliance, security, and global scalability.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Security & Compliance</h3>
+                    <p>Bank-level encryption (AES-256), PCI compliance via Stripe, KYC/AML verification, and SOC 2 infrastructure. Designed with regulatory requirements at the core.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Payment Infrastructure</h3>
+                    <p>Integrated with Stripe for ACH transfers and Plaid for bank account verification. Real-time payment tracking and automated repayment processing.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Scalable Architecture</h3>
+                    <p>Sub-100ms API response times. Real-time marketplace pricing. Automated contract generation. Built to handle institutional-scale transaction volumes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Opportunity -->
+    <section id="investment">
+        <div class="container">
+            <div class="section-header">
+                <h2>Investment Opportunity</h2>
+                <p>Join us in building the future of democratized lending infrastructure.</p>
+            </div>
+
+            <div class="investment-grid">
+                <div class="investment-card">
+                    <h3>Market Position</h3>
+                    <p>We're positioned at the intersection of three massive trends:</p>
+                    <ul>
+                        <li>Alternative credit scoring and financial inclusion</li>
+                        <li>Secondary markets for alternative assets</li>
+                        <li>Cryptocurrency and borderless finance</li>
+                    </ul>
+                </div>
+
+                <div class="investment-card">
+                    <h3>Revenue Model</h3>
+                    <p>Multiple revenue streams provide diversification and scalability:</p>
+                    <ul>
+                        <li>Transaction fees (~1% on loan origination)</li>
+                        <li>Success fees (~5% of lender profit on repayment)</li>
+                        <li>Premium subscriptions (~$9/month per user)</li>
+                        <li>Float on held balances</li>
+                    </ul>
+                </div>
+
+                <div class="investment-card">
+                    <h3>Near-Term Milestones</h3>
+                    <ul>
+                        <li>Complete platform development and testing</li>
+                        <li>Obtain state-by-state lending licenses</li>
+                        <li>Launch beta with initial user cohort</li>
+                        <li>Develop native mobile applications</li>
+                        <li>Establish institutional lending partnerships</li>
+                        <li>Scale to commercial launch in Q2 2025</li>
+                    </ul>
+                </div>
+
+                <div class="investment-card">
+                    <h3>Use of Funds</h3>
+                    <ul>
+                        <li>Regulatory compliance and legal infrastructure</li>
+                        <li>Engineering team expansion</li>
+                        <li>User acquisition and marketing</li>
+                        <li>Enhanced credit assessment models</li>
+                        <li>International expansion preparation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="risk-disclaimer">
+                <h3>Investment Risk Disclosure</h3>
+                <p>Investment in Endless Wallet carries substantial risk. The platform is currently in sandbox stage with no operational history or proven business model. The peer-to-peer lending industry is heavily regulated, and we are in the process of obtaining necessary licenses. Regulatory changes could significantly impact our business model. This is a high-risk, early-stage investment suitable only for sophisticated investors who can afford total loss of capital.</p>
+                <p style="margin-top: 1rem;">Potential investors should conduct thorough due diligence, review all available financial information, and consult with legal and financial advisors before making any investment decision.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section>
+        <div class="container">
+            <div class="cta-section">
+                <h2>Join Our Mission</h2>
+                <p>We're seeking strategic investors and institutional partners to scale democratized lending infrastructure globally.</p>
+                <a href="mailto:investors@endlesswallet.com" class="btn">Request Investment Materials</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-brand">
+                        <div class="footer-logo"></div>
+                        <span class="footer-brand-text">Endless Wallet</span>
+                    </div>
+                    <p class="footer-description">
+                        Building next-generation peer-to-peer lending infrastructure with comprehensive features, 
+                        alternative credit assessment, and secondary market liquidity.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <ul class="footer-links">
+                        <li><a href="#platform">Features</a></li>
+                        <li><a href="#market">Market Opportunity</a></li>
+                        <li><a href="#">Technology</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#investment">Investors</a></li>
+                        <li><a href="#">Team</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Compliance</a></li>
+                        <li><a href="#">Risk Disclosures</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Endless Wallet. All rights reserved. Platform in sandbox stage. Lending involves substantial risk of loss. Not FDIC insured.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
