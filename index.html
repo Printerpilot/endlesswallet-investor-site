@@ -845,10 +845,10 @@
                 <div class="footer-section">
                     <h4>Legal</h4>
                     <ul class="footer-links">
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#compliance">Compliance</a></li>
-                        <li><a href="#risk">Risk Disclosures</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="compliance.html">Compliance</a></li>
+                        <li><a href="risk.html">Risk Disclosures</a></li>
                     </ul>
                 </div>
             </div>
@@ -868,7 +868,14 @@
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
+              document.querySelectorAll('#terms, #privacy, #compliance, #risk').forEach(el => el.style.display = 'none');
+
         });
     </script>
 </body>
-</html>
+</htm<style>
+  #terms, #privacy, #compliance, #risk {
+    display: none;
+  }
+</style>
+l>
