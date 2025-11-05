@@ -1,984 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Endless Wallet - P2P Lending Platform</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: linear-gradient(180deg, #172554 0%, #0f172a 50%, #172554 100%); color: white; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
-        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; }
-        .nav-left { display: flex; align-items: center; gap: 0.75rem; }
-        .logo { width: 3rem; height: 3rem; background-image: url('logo.png'); background-size: cover; background-position: center; background-color: transparent; border-radius: 0.75rem; }
-        .brand { font-size: 1.5rem; font-weight: bold; }
-        .nav-right { display: flex; align-items: center; gap: 1.5rem; }
-        .btn { padding: 0.5rem 1.5rem; border: 1px solid #00C957; background: transparent; color: white; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 1rem; }
-        .btn:hover { background: rgba(0, 201, 87, 0.1); }
-        .btn-primary { background: #00C957; color: black; border: none; font-weight: 600; }
-        .btn-primary:hover { opacity: 0.9; }
-        .hero { padding: 5rem 0; }
-        .hero h1 { font-size: 3.75rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.2; }
-        .hero p { font-size: 1.25rem; color: #9ca3af; margin-bottom: 3rem; line-height: 1.6; }
-        .button-group { display: flex; gap: 1rem; margin-bottom: 4rem; }
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-        .feature-card { padding: 1.5rem; background: rgba(30, 41, 59, 0.5); border-radius: 0.75rem; border: 1px solid rgba(51, 65, 85, 0.5); }
-        .feature-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-        .feature-card h3 { font-weight: 600; margin-bottom: 0.5rem; }
-        .feature-card p { font-size: 0.875rem; color: #9ca3af; }
-        .form-container { max-width: 28rem; margin: 3rem auto; }
-        .form-card { background: rgba(30, 41, 59, 0.3); backdrop-filter: blur(10px); border-radius: 1rem; padding: 2rem; border: 1px solid rgba(51, 65, 85, 0.5); }
-        .form-group { margin-bottom: 1rem; }
-        .form-label { display: block; font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem; }
-        .form-input, .form-select, .form-textarea { width: 100%; padding: 0.75rem 1rem; background: rgba(51, 65, 85, 0.5); border: none; border-radius: 0.5rem; color: white; font-size: 1rem; }
-        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: 2px solid #00C957; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .back-btn { background: none; border: none; color: #9ca3af; cursor: pointer; margin-bottom: 1.5rem; font-size: 1rem; }
-        .back-btn:hover { color: white; }
-        .hidden { display: none !important; }
-        .app-layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 20rem; background: #172554; border-right: 1px solid #1e293b; transition: all 0.3s; overflow: hidden; }
-        .sidebar.closed { width: 0; }
-        .sidebar-content { padding: 1.5rem; width: 20rem; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .menu-item { width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; background: none; border: none; color: #9ca3af; cursor: pointer; border-radius: 0.5rem; margin-bottom: 0.25rem; transition: all 0.2s; font-size: 1rem; text-align: left; }
-        .menu-item:hover { background: #1e293b; color: white; }
-        .menu-item.active { background: #1e293b; color: #00C957; }
-        .main-content { flex: 1; display: flex; flex-direction: column; }
-        .header { padding: 1rem 1.5rem; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between; align-items: center; }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .menu-toggle { background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.5rem; }
-        .menu-toggle:hover { color: white; }
-        .badge { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.75rem; background: rgba(0, 201, 87, 0.2); border-radius: 9999px; font-size: 0.875rem; color: #00C957; }
-        .badge-dot { width: 0.5rem; height: 0.5rem; background: #00C957; border-radius: 50%; }
-        .content-area { flex: 1; padding: 1.5rem; overflow-y: auto; max-height: calc(100vh - 70px); }
-        .welcome-screen { text-align: center; padding: 5rem 0; }
-        .welcome-screen h2 { font-size: 2rem; margin-bottom: 1rem; }
-        .welcome-screen p { color: #9ca3af; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-        .card { background: rgba(30, 41, 59, 0.3); backdrop-filter: blur(10px); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid rgba(51, 65, 85, 0.5); }
-        .petition-card { background: rgba(30, 41, 59, 0.5); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid rgba(51, 65, 85, 0.5); margin-bottom: 1.5rem; }
-        .avatar { width: 3rem; height: 3rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
-        .avatar-pink { background: #ec4899; }
-        .avatar-blue { background: #3b82f6; }
-        .avatar-purple { background: #a855f7; }
-        .progress-bar { height: 0.5rem; background: rgba(51, 65, 85, 0.5); border-radius: 9999px; overflow: hidden; margin: 1rem 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #00C957, #00A844); transition: width 0.3s; }
-        .toggle-group { display: flex; gap: 0.5rem; }
-        .toggle-btn { padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; background: rgba(51, 65, 85, 0.5); color: #9ca3af; }
-        .toggle-btn.active-yes { background: #00C957; color: black; font-weight: 600; }
-        .toggle-btn.active-no { background: rgba(239, 68, 68, 0.2); color: #ef4444; font-weight: 600; }
-        .badge-pill { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; margin-right: 0.5rem; margin-bottom: 0.5rem; }
-        .badge-green { background: rgba(0, 201, 87, 0.2); color: #00C957; }
-        .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-        .badge-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-        .badge-cyan { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
-        .badge-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .search-bar { width: 100%; padding: 0.75rem 1rem; background: rgba(30, 41, 59, 0.5); border: none; border-radius: 0.5rem; color: white; margin-bottom: 1.5rem; }
-        .search-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .filter-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; background: rgba(51, 65, 85, 0.5); color: #9ca3af; }
-        .filter-btn.active { background: #00C957; color: black; font-weight: 600; }
-        .checkbox-group { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; cursor: pointer; }
-        .checkbox { width: 1.25rem; height: 1.25rem; border-radius: 0.25rem; cursor: pointer; }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .sidebar { width: 16rem; }
-            .sidebar-content { width: 16rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Endless Wallet – P2P Lending Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --color-primary: #00C957;
+      --color-bg: #172554;
+      --color-bg-alt: #0f172a;
+      --color-text: #d1d5db;
+      --color-muted: #9ca3af;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-alt) 50%, var(--color-bg) 100%);
+      color: var(--color-text);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .logo {
+      width: 3rem;
+      height: 3rem;
+      background-image: url('/logo.png');
+      background-size: cover;
+      background-position: center;
+      background-color: transparent;
+      border-radius: 0.75rem;
+    }
+    .brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .btn {
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--color-primary);
+      background: transparent;
+      color: var(--color-text);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background: rgba(0, 201, 87, 0.1);
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: #000;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    .hero {
+      padding: 5rem 0;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.75rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--color-muted);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      padding: 1.5rem;
+      background: rgba(30, 41, 59, 0.5);
+      border-radius: 0.75rem;
+      border: 1px solid rgba(51, 65, 85, 0.5);
+      text-align: center;
+    }
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .feature-card h3 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--color-muted);
+    }
+    .form-container {
+      max-width: 28rem;
+      margin: 3rem auto;
+    }
+    .form-card {
+      background: rgba(30, 41, 59, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 2rem;
+      border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="app"></div>
-    <script>
-        const state = {
-            currentView: 'landing',
-            menuOpen: false,
-            user: null,
-            onboardingStep: 1,
-            searchQuery: '',
-            searchFilter: 'All',
-            loanDetails: {
-                amount: 15000,
-                currency: 'USD',
-                term: 24,
-                apr: 12,
-                repayment: 'Monthly',
-                tradeableNote: true,
-                useConsumerCredit: true,
-                reputationScore: 82,
-                verifiedFICO: 720,
-                cosigner: true,
-                cosignerReputation: 78,
-                cosignerFICO: 700,
-                secured: true,
-                collateral: ['vehicle'],
-                governingLaw: 'California, USA',
-                additionalTerms: '',
-                otherCollateral: '',
-                agreeToCAPI: true
-            }
-        };
-
-        // Mock user data with CORE Score (Credit & Obligation Rating Evaluation)
-        // CORE Score: Holistic creditworthiness assessment (300-850 range, starts at 650)
-        // Factors: verified identity, social connections, net worth composition, repayment history
-        const mockUser = {
-            name: 'Troy',
-            coreScore: 720,
-            ficoScore: 720,
-            netWorth: 95000,
-            checkingBalance: 24000,
-            loansReceivable: 6000,
-            realAssets: 12350,
-            stocks: 32300,
-            bonds: 5000,
-            crypto: 3500,
-            debtToAssets: 15.0,
-            debtToIncome: 16.0,
-            borrowingCapacity: 13400
-        };
-
-        const mockPetitions = [
-            { id: 1, name: 'Sarah Johnson', initials: 'SJ', color: 'avatar-pink', amount: 5000, apr: 7.5, term: 12, score: 720, funded: 45, purpose: 'Small Business Inventory', description: 'Growing my online boutique business. Need inventory for the holiday season.', timeAgo: '2 days ago', verified: true },
-            { id: 2, name: 'Mike Chen', initials: 'MC', color: 'avatar-blue', amount: 3000, apr: 6, term: 6, score: 680, funded: 78, purpose: 'Medical Emergency', description: 'Unexpected medical expenses not covered by insurance.', timeAgo: '5 hours ago', verified: true },
-            { id: 3, name: 'Emily Rodriguez', initials: 'ER', color: 'avatar-pink', amount: 8000, apr: 9, term: 24, score: 650, funded: 23, purpose: 'Debt Consolidation', description: 'Consolidating high-interest credit card debt into a single payment.', timeAgo: '1 day ago', verified: false },
-            { id: 4, name: 'James Wilson', initials: 'JW', color: 'avatar-blue', amount: 2500, apr: 5.5, term: 18, score: 750, funded: 92, purpose: 'Education', description: 'Professional certification course to advance my career.', timeAgo: '3 hours ago', verified: true }
-        ];
-
-        const mockTradeableNotes = [
-            { id: 1, borrower: 'Sarah Johnson', initials: 'SJ', color: 'avatar-pink', originalAmount: 5000, remainingBalance: 2800, apr: 7.5, termRemaining: 7, totalTerm: 12, askingPrice: 2650, discount: 5.4, score: 720, purpose: 'Small Business Inventory', paymentsOnTime: '5/5', listingType: 'Partial', verified: true },
-            { id: 2, borrower: 'David Martinez', initials: 'DM', color: 'avatar-blue', originalAmount: 10000, remainingBalance: 10000, apr: 8.0, termRemaining: 24, totalTerm: 24, askingPrice: 9200, discount: 8.0, score: 690, purpose: 'Home Renovation', paymentsOnTime: '0/0', listingType: 'Full Note', verified: true },
-            { id: 3, borrower: 'Rachel Kim', initials: 'RK', color: 'avatar-purple', originalAmount: 8000, remainingBalance: 6400, apr: 6.5, termRemaining: 16, totalTerm: 24, askingPrice: 3200, discount: 0, score: 735, purpose: 'Business Equipment', paymentsOnTime: '8/8', listingType: 'Split (50%)', verified: true }
-        ];
-
-        const mockVerifiedFriends = [
-            { id: 1, name: 'Sarah Johnson', coreScore: 720 },
-            { id: 2, name: 'Mike Chen', coreScore: 680 },
-            { id: 3, name: 'James Wilson', coreScore: 750 },
-            { id: 4, name: 'Lisa Anderson', coreScore: 695 }
-        ];
-
-        const currencies = {
-            Fiat: [
-                { code: 'USD', name: 'US Dollar', symbol: '$' },
-                { code: 'EUR', name: 'Euro', symbol: '€' },
-                { code: 'GBP', name: 'British Pound', symbol: '£' },
-                { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
-                { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
-                { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' }
-            ],
-            Crypto: [
-                { code: 'USDC', name: 'USD Coin' },
-                { code: 'USDT', name: 'Tether' },
-                { code: 'BTC', name: 'Bitcoin' },
-                { code: 'ETH', name: 'Ether' }
-            ]
-        };
-
-        function render() {
-            const app = document.getElementById('app');
-            switch(state.currentView) {
-                case 'landing': app.innerHTML = renderLanding(); break;
-                case 'signup':
-                case 'signin': app.innerHTML = renderSignup(); break;
-                case 'onboarding': app.innerHTML = renderOnboarding(); break;
-                default:
-                    if (state.user) app.innerHTML = renderAppLayout();
-                    else app.innerHTML = renderLanding();
-            }
-            attachEventListeners();
-        }
-
-        function renderLanding() {
-            return `
-                <nav class="nav">
-                    <div class="nav-left"><div class="logo"></div><span class="brand">Endless Wallet</span></div>
-                    <div class="nav-right">
-                        <button class="btn" style="border: none; background: none;">About ROSI</button>
-                        <button class="btn" style="border: none; background: none;">How It Works</button>
-                        <button class="btn" data-action="goToSignin">Sign In</button>
-                    </div>
-                </nav>
-                <div class="container hero">
-                    <div style="max-width: 48rem;">
-                        <h1>Borrow and lend with<br>comprehensive contracts</h1>
-                        <p>Peer-to-peer lending with flexibility and transparency.<br>Connect your social accounts, verify your identity, and get access to lending opportunities in minutes.</p>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="goToSignup" style="padding: 1rem 2rem;">Get Started</button>
-                            <button class="btn" data-action="goToSignin" style="padding: 1rem 2rem;">Sign In with OAuth</button>
-                        </div>
-                        <div class="features">
-                            <div class="feature-card"><div class="feature-icon">🛡️</div><h3>Secure & Verified</h3><p>KYC verified users with comprehensive contracts</p></div>
-                            <div class="feature-card"><div class="feature-icon">🌐</div><h3>Social Trust</h3><p>Build reputation through successful loans</p></div>
-                            <div class="feature-card"><div class="feature-icon">📊</div><h3>Transparent</h3><p>Clear terms and flexible negotiations</p></div>
-                            <div class="feature-card"><div class="feature-icon">📈</div><h3>CORE Score</h3><p>Credit & Obligation Rating Evaluation - holistic creditworthiness beyond FICO</p></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderSignup() {
-            return `
-                <nav class="nav"><div class="nav-left"><div class="logo"></div><span class="brand">Endless Wallet</span></div></nav>
-                <div class="form-container">
-                    <div class="form-card">
-                        <button class="back-btn" data-action="goToLanding">← Back</button>
-                        <h2 style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">Create Your Account</h2>
-                        <p style="color: #9ca3af; margin-bottom: 2rem;">Sign up with email to get started</p>
-                        <div class="form-row">
-                            <div class="form-group"><label class="form-label">First name</label><input type="text" class="form-input" placeholder="Troy"></div>
-                            <div class="form-group"><label class="form-label">Last name</label><input type="text" class="form-input" placeholder="Lunn"></div>
-                        </div>
-                        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="your@email.com"></div>
-                        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="••••••••"></div>
-                        <button class="btn btn-primary" data-action="createAccount" style="width: 100%; padding: 1rem; margin-top: 1rem;">Create Account</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderOnboarding() {
-            const steps = [
-                { title: 'Welcome to Endless Wallet', description: 'Complete these steps to start lending and borrowing.', icon: '👋' },
-                { title: 'Verify your identity', description: "We'll check a government ID (driver license or passport).", icon: '🛡️' },
-                { title: 'Connect your bank', description: 'Securely link a checking account for deposits and repayments.', icon: '💳' },
-                { title: 'Watch intro video', description: '90-second walkthrough of petitions, offers, and reputation.', icon: 'ℹ️' }
-            ];
-            const currentStep = steps[state.onboardingStep - 1];
-            return `
-                <nav class="nav">
-                    <div class="nav-left"><div class="logo"></div><span class="brand">Endless Wallet</span></div>
-                    <div style="font-size: 0.875rem; color: #9ca3af;">Onboarding</div>
-                </nav>
-                <div class="container" style="max-width: 48rem; margin: 3rem auto;">
-                    <div class="form-card">
-                        ${state.onboardingStep > 1 ? '<button class="back-btn" data-action="previousStep">← Back</button>' : ''}
-                        <div style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1rem;">Step ${state.onboardingStep} of ${steps.length}</div>
-                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
-                            <span style="font-size: 2rem;">${currentStep.icon}</span>
-                            <h2 style="font-size: 2rem; font-weight: bold;">${currentStep.title}</h2>
-                        </div>
-                        <p style="color: #9ca3af; margin-bottom: 2rem;">${currentStep.description}</p>
-                        <button class="btn btn-primary" data-action="nextStep" style="width: 100%; padding: 1rem;">
-                            ${state.onboardingStep === 1 ? 'Get Started' : state.onboardingStep === 2 ? 'Start verification' : state.onboardingStep === 3 ? 'Link bank' : 'Go to dashboard'}
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAppLayout() {
-            const menuItems = [
-                { label: 'Wall', view: 'wall', icon: '🏠' },
-                { label: 'Dashboard', view: 'dashboard', icon: '📊' },
-                { label: 'Borrow', view: 'borrow', icon: '💰' },
-                { label: 'Lend', view: 'lend', icon: '🔍' },
-                { label: 'Credit', view: 'credit', icon: '💳' },
-                { label: 'Market', view: 'market', icon: '📈' },
-                { label: 'Banking', view: 'banking', icon: '🏦' },
-                { label: 'Crypto', view: 'crypto', icon: '🌐' },
-                { label: 'Outstanding Loans', view: 'loans', icon: '🕐' },
-                { label: 'Lending Toolbox', view: 'toolbox', icon: '🔧' },
-                { label: 'Investor\'s Blog', view: 'blog', icon: '📖' },
-                { label: 'Settings', view: 'settings', icon: '⚙️' }
-            ];
-
-            return `
-                <div class="app-layout">
-                    <div class="sidebar ${state.menuOpen ? '' : 'closed'}">
-                        <div class="sidebar-content">
-                            <div class="sidebar-header">
-                                <span style="font-size: 1.25rem; font-weight: 600;">Navigation</span>
-                                <button class="menu-toggle" data-action="toggleMenu">✕</button>
-                            </div>
-                            <nav>
-                                ${menuItems.map(item => `<button class="menu-item ${state.currentView === item.view ? 'active' : ''}" data-action="navigateTo" data-view="${item.view}"><span>${item.icon}</span><span>${item.label}</span></button>`).join('')}
-                                <button class="menu-item" data-action="logout"><span>🚪</span><span>Logout</span></button>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="main-content">
-                        <div class="header">
-                            <div class="header-left">
-                                <button class="menu-toggle" data-action="toggleMenu">☰</button>
-                                <div class="nav-left">
-                                    <div class="logo" style="width: 2.5rem; height: 2.5rem;"></div>
-                                    <span class="brand" style="font-size: 1.25rem;">Endless Wallet</span>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <div class="badge" title="Credit & Obligation Rating Evaluation - Holistic creditworthiness assessment incorporating verified identity, social connections, net worth, and payment history"><div class="badge-dot"></div><span>CORE: ${state.user.coreScore}</span></div>
-                                <button style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.25rem;">🔔</button>
-                            </div>
-                        </div>
-                        <div class="content-area">${renderPageContent()}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderPageContent() {
-            switch(state.currentView) {
-                case 'wall': return renderWallPage();
-                case 'dashboard': return renderDashboardPage();
-                case 'borrow': return renderBorrowPage();
-                case 'lend': return renderLendPage();
-                case 'credit': return renderCreditPage();
-                case 'market': return renderMarketPage();
-                case 'banking': return renderBankingPage();
-                case 'crypto': return renderCryptoPage();
-                case 'loans': return renderLoansPage();
-                case 'toolbox': return renderToolboxPage();
-                case 'blog': return renderBlogPage();
-                case 'settings': return renderSettingsPage();
-                default: return '<div class="welcome-screen"><h2>Dashboard</h2></div>';
-            }
-        }
-
-        function renderWallPage() {
-            return `
-                <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">${state.user.name}'s Wall</h1>
-                <div class="grid-3" style="margin-bottom: 2rem;">
-                    <div class="card"><h3 style="color: #00C957; margin-bottom: 1rem;">Loan Statistics</h3><p style="margin-bottom: 0.5rem;">Total Borrowed: $45,000</p><p style="margin-bottom: 0.5rem;">Total Lent: $23,000</p><p style="margin-bottom: 0.5rem;">Success Rate: 98%</p><p>Active Loans: 3</p></div>
-                    <div class="card"><h3 style="color: #00C957; margin-bottom: 1rem;">Social Connections</h3><p style="margin-bottom: 0.5rem;">📱 LinkedIn: Connected</p><p style="margin-bottom: 0.5rem;">🦋 X/Twitter: Connected</p><p style="margin-bottom: 0.5rem;">📘 Facebook: Connected</p><p>📷 Instagram: Connected</p></div>
-                    <div class="card"><h3 style="color: #00C957; margin-bottom: 1rem;">Recent Activity</h3><p style="margin-bottom: 0.5rem;">• Funded Sarah's business loan</p><p style="margin-bottom: 0.5rem;">• Completed loan repayment #47</p><p>• Posted: "Q4 lending strategy"</p></div>
-                </div>
-                <div class="card"><h3 style="margin-bottom: 1rem; color: #9ca3af;">Posts & Updates</h3><div style="display: flex; gap: 1rem;"><div class="avatar" style="background: #00C957; color: black; flex-shrink: 0;">T</div><div><div style="margin-bottom: 0.5rem;"><strong>${state.user.name}</strong> <span style="color: #9ca3af; font-size: 0.875rem;">• 2 hours ago</span></div><p style="color: #d1d5db;">Just completed my 50th successful loan on Endless Wallet! Building trust through transparency has been key to my lending strategy.</p></div></div></div>
-            `;
-        }
-
-        function renderDashboardPage() {
-            const assets = [
-                { name: 'Cash', value: state.user.checkingBalance, percent: 40, color: '#00C957' },
-                { name: 'Loans Receivable', displayName: 'Loans Receivable (owed to you)', value: state.user.loansReceivable, percent: 10, color: '#ff6b9d' },
-                { name: 'Crypto', value: state.user.crypto, percent: 6, color: '#06b6d4' },
-                { name: 'Real Assets', value: state.user.realAssets, percent: 20, color: '#a78bfa' },
-                { name: 'Bonds', value: state.user.bonds, percent: 8, color: '#fbbf24' },
-                { name: 'Stocks', value: state.user.stocks, percent: 15, color: '#fb923c' }
-            ];
-
-            // Calculate donut chart segments
-            let cumulativePercent = 0;
-            const radius = 100;
-            const centerX = 200;
-            const centerY = 200;
-            const innerRadius = 70;
-            const labelRadius = 130;
-
-            function getDonutSegmentPath(startPercent, endPercent, radius, innerRadius) {
-                const startAngle = (startPercent / 100) * 2 * Math.PI - Math.PI / 2;
-                const endAngle = (endPercent / 100) * 2 * Math.PI - Math.PI / 2;
-                
-                const x1 = centerX + radius * Math.cos(startAngle);
-                const y1 = centerY + radius * Math.sin(startAngle);
-                const x2 = centerX + radius * Math.cos(endAngle);
-                const y2 = centerY + radius * Math.sin(endAngle);
-                
-                const x3 = centerX + innerRadius * Math.cos(endAngle);
-                const y3 = centerY + innerRadius * Math.sin(endAngle);
-                const x4 = centerX + innerRadius * Math.cos(startAngle);
-                const y4 = centerY + innerRadius * Math.sin(startAngle);
-                
-                const largeArc = endPercent - startPercent > 50 ? 1 : 0;
-                
-                return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`;
-            }
-
-            function getLabelPosition(startPercent, endPercent) {
-                const midPercent = (startPercent + endPercent) / 2;
-                const angle = (midPercent / 100) * 2 * Math.PI - Math.PI / 2;
-                const x = centerX + labelRadius * Math.cos(angle);
-                const y = centerY + labelRadius * Math.sin(angle);
-                return { x, y };
-            }
-
-            return `
-                <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Welcome back, ${state.user.name}!</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 2rem;">Net Worth Breakdown</h3>
-                    <div style="text-align: center; margin-bottom: 3rem;">
-                        <svg width="400" height="400" viewBox="0 0 400 400" style="max-width: 100%;">
-                            ${assets.map((asset, i) => {
-                                const startPercent = cumulativePercent;
-                                cumulativePercent += asset.percent;
-                                const endPercent = cumulativePercent;
-                                const labelPos = getLabelPosition(startPercent, endPercent);
-                                return `
-                                    <path d="${getDonutSegmentPath(startPercent, endPercent, radius, innerRadius)}" fill="${asset.color}" />
-                                    <text x="${labelPos.x}" y="${labelPos.y - 8}" text-anchor="middle" fill="#d1d5db" font-size="14" font-weight="500">${asset.name}</text>
-                                    <text x="${labelPos.x}" y="${labelPos.y + 8}" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="bold">${asset.percent}%</text>
-                                `;
-                            }).join('')}
-                            <text x="${centerX}" y="${centerY - 10}" text-anchor="middle" fill="#9ca3af" font-size="14">Net Worth</text>
-                            <text x="${centerX}" y="${centerY + 20}" text-anchor="middle" fill="#ffffff" font-size="32" font-weight="bold">$${((state.user.netWorth - 8000) / 2).toLocaleString()}</text>
-                        </svg>
-                    </div>
-                    <div style="max-width: 800px; margin: 0 auto;">
-                        ${assets.map(asset => `
-                            <div style="margin-bottom: 1.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 1rem; color: #ffffff;">${asset.displayName || asset.name}</span>
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <span style="color: #9ca3af; font-size: 1rem;">$${asset.value.toLocaleString()}</span>
-                                        <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 700; background: ${asset.color}; color: #000000; min-width: 3rem; text-align: center;">${asset.percent}%</span>
-                                    </div>
-                                </div>
-                                <div style="width: 100%; height: 0.5rem; background: rgba(51, 65, 85, 0.5); border-radius: 9999px; overflow: hidden;">
-                                    <div style="height: 100%; width: ${asset.percent}%; background: ${asset.color}; border-radius: 9999px;"></div>
-                                </div>
-                            </div>
-                        `).join('')}
-                        <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 0.75rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span style="font-size: 1.125rem; color: #ff6b6b; font-weight: 600;">Your Debt (liabilities)</span>
-                                <span style="font-size: 1.5rem; color: #ff6b6b; font-weight: bold;">-$8,000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid-2" style="margin-bottom: 2rem;">
-                    <div class="card">
-                        <h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">Leverage</h3>
-                        <div style="margin-bottom: 1.5rem;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;"><span style="font-size: 0.875rem;">Debt to Assets</span><span style="font-weight: bold; color: #00C957;">${state.user.debtToAssets}%</span></div>
-                            <div style="height: 0.5rem; background: rgba(51, 65, 85, 0.5); border-radius: 9999px; overflow: hidden;"><div style="height: 100%; width: ${state.user.debtToAssets}%; background: linear-gradient(90deg, #00C957, #00A844);"></div></div>
-                        </div>
-                        <div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;"><span style="font-size: 0.875rem;">Debt to Income</span><span style="font-weight: bold; color: #00C957;">${state.user.debtToIncome}%</span></div>
-                            <div style="height: 0.5rem; background: rgba(51, 65, 85, 0.5); border-radius: 9999px; overflow: hidden;"><div style="height: 100%; width: ${state.user.debtToIncome}%; background: linear-gradient(90deg, #00C957, #00A844);"></div></div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Borrowing Capacity</h3>
-                        <div style="font-size: 2rem; font-weight: bold; color: #00C957; margin-bottom: 0.5rem;">$${state.user.borrowingCapacity.toLocaleString()}</div>
-                        <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">Available at 6.5% APR</p>
-                        <button class="btn btn-primary" data-action="navigateTo" data-view="borrow" style="width: 100%; padding: 0.5rem;">Create Petition</button>
-                    </div>
-                </div>
-                &lt;div class="card" style="margin-bottom: 2rem;"&gt;
-            &lt;h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;"&gt;Cost of Capital&lt;/h3&gt;
-            &lt;div style="font-size: 2rem; font-weight: bold; color: #00C957; margin-bottom: 0.5rem;"&gt;7.2%&lt;/div&gt;
-            &lt;p style="font-size: 0.875rem; color: #9ca3af;"&gt;Average APR&lt;/p&gt;
-            &lt;p style="font-size: 0.875rem; color: #facc15; margin-top: 0.5rem;"&gt;↗ 0.3% from last month&lt;/p&gt;
-        &lt;/div&gt;
-    `;
-        }
-
-        function renderBorrowPage() {
-            const payment = calculatePayment();
-            const collateralOptions = [
-                { id: 'vehicle', label: 'Vehicle (VIN)' },
-                { id: 'cash', label: 'Cash/Stablecoin Deposit (e.g., USDC)' },
-                { id: 'realEstate', label: 'Real Estate' },
-                { id: 'securities', label: 'Securities (stocks/bonds)' },
-                { id: 'accountsReceivable', label: 'Accounts Receivable' },
-                { id: 'nft', label: 'NFT / Digital Asset' },
-                { id: 'personalGuarantee', label: 'Personal Guarantee' },
-                { id: 'other', label: 'Other (specify)' }
-            ];
-
-            const currencySymbol = getCurrencySymbol(state.loanDetails.currency);
-
-            return `
-                <div class="grid-2">
-                    <div class="card">
-                        <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1.5rem;">Loan details</h2>
-                        <div class="form-row" style="margin-bottom: 1.5rem;">
-                            <div class="form-group"><label class="form-label">Amount</label><input type="number" class="form-input" id="loanAmount" value="${state.loanDetails.amount}"></div>
-                            <div class="form-group">
-                                <label class="form-label">Currency</label>
-                                <select class="form-select" id="loanCurrency">
-                                    <optgroup label="Fiat">
-                                        ${currencies.Fiat.map(c => `<option value="${c.code}" ${state.loanDetails.currency === c.code ? 'selected' : ''}>${c.code} - ${c.name}</option>`).join('')}
-                                    </optgroup>
-                                    <optgroup label="Crypto">
-                                        ${currencies.Crypto.map(c => `<option value="${c.code}" ${state.loanDetails.currency === c.code ? 'selected' : ''}>${c.code} - ${c.name}</option>`).join('')}
-                                    </optgroup>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row" style="margin-bottom: 1.5rem;">
-                            <div class="form-group"><label class="form-label">Term (months)</label><input type="number" class="form-input" id="loanTerm" value="${state.loanDetails.term}"></div>
-                            <div class="form-group"><label class="form-label">APR (%)</label><input type="number" step="0.1" class="form-input" id="loanAPR" value="${state.loanDetails.apr}"></div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="form-label">Repayment</label>
-                            <select class="form-select" id="loanRepayment">
-                                <option value="Monthly" ${state.loanDetails.repayment === 'Monthly' ? 'selected' : ''}>Monthly</option>
-                                <option value="Quarterly" ${state.loanDetails.repayment === 'Quarterly' ? 'selected' : ''}>Quarterly</option>
-                                <option value="Balloon" ${state.loanDetails.repayment === 'Balloon' ? 'selected' : ''}>Balloon</option>
-                            </select>
-                        </div>
-                        <div style="padding-top: 1.5rem; border-top: 1px solid rgba(51, 65, 85, 0.5);">
-                            <div style="margin-bottom: 1.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; color: #9ca3af;">Tradeable Note</span>
-                                    <div class="toggle-group">
-                                        <button class="toggle-btn ${state.loanDetails.tradeableNote ? 'active-yes' : ''}" data-action="toggleLoanField" data-field="tradeableNote" data-value="true">Yes</button>
-                                        <button class="toggle-btn ${!state.loanDetails.tradeableNote ? 'active-no' : ''}" data-action="toggleLoanField" data-field="tradeableNote" data-value="false">No</button>
-                                    </div>
-                                </div>
-                                <p style="font-size: 0.75rem; color: #6b7280;">If Yes, this note may be listed/transferred subject to platform rules.</p>
-                            </div>
-                            <div style="margin-bottom: 1.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; color: #9ca3af;">Use Consumer Credit</span>
-                                    <div class="toggle-group">
-                                        <button class="toggle-btn ${state.loanDetails.useConsumerCredit ? 'active-yes' : ''}" data-action="toggleLoanField" data-field="useConsumerCredit" data-value="true">Yes</button>
-                                        <button class="toggle-btn ${!state.loanDetails.useConsumerCredit ? 'active-no' : ''}" data-action="toggleLoanField" data-field="useConsumerCredit" data-value="false">No</button>
-                                    </div>
-                                </div>
-                                <p style="font-size: 0.75rem; color: #6b7280;">If Yes, verified FICO scores will be shown to lenders.</p>
-                            </div>
-                            <div class="form-row" style="margin-bottom: 1.5rem;">
-                                <div class="form-group"><label class="form-label">Reputation Score</label><input type="number" class="form-input" value="${state.loanDetails.reputationScore}" readonly></div>
-                                <div class="form-group"><label class="form-label">Verified FICO</label><input type="number" class="form-input" value="${state.loanDetails.verifiedFICO}" readonly></div>
-                            </div>
-                            <div style="margin-bottom: 1.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; color: #9ca3af;">Cosigner</span>
-                                    <div class="toggle-group">
-                                        <button class="toggle-btn ${state.loanDetails.cosigner ? 'active-yes' : ''}" data-action="toggleLoanField" data-field="cosigner" data-value="true">Yes</button>
-                                        <button class="toggle-btn ${!state.loanDetails.cosigner ? 'active-no' : ''}" data-action="toggleLoanField" data-field="cosigner" data-value="false">No</button>
-                                    </div>
-                                </div>
-                            </div>
-                            ${state.loanDetails.cosigner ? `
-                                <div class="form-row" style="margin-bottom: 1.5rem; padding-left: 1rem;">
-                                    <div class="form-group"><label class="form-label">Cosigner Reputation</label><input type="number" class="form-input" id="cosignerReputation" value="${state.loanDetails.cosignerReputation}"></div>
-                                    <div class="form-group"><label class="form-label">Cosigner Verified FICO</label><input type="number" class="form-input" id="cosignerFICO" value="${state.loanDetails.cosignerFICO}"><span style="font-size: 0.75rem; color: #6b7280;">Auto-populated</span></div>
-                                </div>
-                            ` : ''}
-                            <div style="margin-bottom: 1.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                    <span style="font-size: 0.875rem; color: #9ca3af;">Secured Loan</span>
-                                    <div class="toggle-group">
-                                        <button class="toggle-btn ${state.loanDetails.secured ? 'active-yes' : ''}" data-action="toggleLoanField" data-field="secured" data-value="true">Yes</button>
-                                        <button class="toggle-btn ${!state.loanDetails.secured ? 'active-no' : ''}" data-action="toggleLoanField" data-field="secured" data-value="false">No</button>
-                                    </div>
-                                </div>
-                                <p style="font-size: 0.75rem; color: #6b7280;">Requires agreement to repossession/collections API terms.</p>
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="form-label">Governing Law / Venue</label>
-                            <input type="text" class="form-input" id="loanGoverningLaw" value="${state.loanDetails.governingLaw}">
-                        </div>
-                        ${state.loanDetails.secured ? `
-                            <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label class="form-label" style="margin-bottom: 0.75rem;">Collateral (select all that apply)</label>
-                                ${collateralOptions.map(opt => `
-                                    <div class="checkbox-group">
-                                        <input type="checkbox" class="checkbox" ${state.loanDetails.collateral.includes(opt.id) ? 'checked' : ''} data-action="toggleCollateral" data-collateral="${opt.id}">
-                                        <span style="color: #d1d5db; font-size: 0.875rem;">${opt.label}</span>
-                                    </div>
-                                `).join('')}
-                                ${state.loanDetails.collateral.includes('other') ? `
-                                    <div style="padding-left: 2rem; padding-top: 0.5rem;">
-                                        <label class="form-label">Other — please specify</label>
-                                        <textarea class="form-textarea" id="otherCollateral" rows="3" placeholder="Describe collateral, identifiers, custody details, etc.">${state.loanDetails.otherCollateral}</textarea>
-                                    </div>
-                                ` : ''}
-                            </div>
-                            <div style="padding: 1rem; background: rgba(51, 65, 85, 0.3); border-radius: 0.5rem; margin-bottom: 1.5rem;">
-                                <div class="checkbox-group">
-                                    <input type="checkbox" class="checkbox" ${state.loanDetails.agreeToCAPI ? 'checked' : ''} data-action="toggleLoanField" data-field="agreeToCAPI" data-value="${!state.loanDetails.agreeToCAPI}">
-                                    <span style="font-size: 0.875rem; color: #d1d5db;">I agree to the Repossession & Collections API terms for collateral enforcement.</span>
-                                </div>
-                            </div>
-                        ` : ''}
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="form-label">Additional Terms</label>
-                            <textarea class="form-textarea" id="additionalTerms" rows="4" placeholder="Any bespoke covenants, prepayment rights, grace periods, etc.">${state.loanDetails.additionalTerms}</textarea>
-                        </div>
-                        <div style="padding: 1rem; background: rgba(51, 65, 85, 0.3); border-radius: 0.5rem;">
-                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">Terms of Default</h3>
-                            <p style="font-size: 0.875rem; color: #9ca3af;">If Borrower fails to pay any amount when due and such failure continues for 10 days, the Lender may declare the entire outstanding balance immediately due and payable, and may pursue all remedies available at law or in equity.</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <div class="card">
-                            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1.5rem;">Contract Preview</h2>
-                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
-                                ${state.loanDetails.tradeableNote ? '<span class="badge-pill badge-green">Tradeable Note: Yes</span>' : ''}
-                                <span class="badge-pill badge-blue">Rep: ${state.loanDetails.reputationScore}</span>
-                                <span class="badge-pill badge-purple">FICO: ${state.loanDetails.verifiedFICO}</span>
-                                ${state.loanDetails.cosigner ? `<span class="badge-pill badge-cyan">Cosigner Rep: ${state.loanDetails.cosignerReputation}</span>` : ''}
-                                ${state.loanDetails.cosigner ? `<span class="badge-pill badge-purple">Cosigner FICO: ${state.loanDetails.cosignerFICO}</span>` : ''}
-                                ${state.loanDetails.secured ? '<span class="badge-pill badge-emerald">Secured</span>' : ''}
-                            </div>
-                            <div style="font-size: 0.875rem; line-height: 1.6;">
-                                <p style="margin-bottom: 0.75rem;"><strong>Amount:</strong> ${currencySymbol}${parseFloat(state.loanDetails.amount).toLocaleString()} ${state.loanDetails.currency} at ${state.loanDetails.apr}% APR</p>
-                                <p style="margin-bottom: 0.75rem;"><strong>Term & Repayment:</strong> ${state.loanDetails.term} months • ${state.loanDetails.repayment.toLowerCase()}</p>
-                                <p style="margin-bottom: 0.75rem;"><strong>Governing Law:</strong> ${state.loanDetails.governingLaw}</p>
-                                <p style="color: #9ca3af; font-size: 0.75rem; font-style: italic;">This is a UX preview; final language will be generated by your Ironclad template.</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1.5rem;">Repayment Schedule (Preview)</h2>
-                            ${payment > 0 ? `
-                                <div class="grid-3" style="margin-bottom: 1.5rem;">
-                                    <div><p style="font-size: 0.75rem; color: #9ca3af;">Estimated Payment</p><p style="font-size: 1.25rem; font-weight: bold; color: #00C957;">${currencySymbol}${payment.toFixed(2)}</p></div>
-                                    <div><p style="font-size: 0.75rem; color: #9ca3af;">Total Interest (est)</p><p style="font-size: 1.25rem; font-weight: bold; color: #60a5fa;">${currencySymbol}${(payment * state.loanDetails.term - state.loanDetails.amount).toFixed(2)}</p></div>
-                                    <div><p style="font-size: 0.75rem; color: #9ca3af;">Payments</p><p style="font-size: 1.25rem; font-weight: bold; color: #c084fc;">${state.loanDetails.term}</p></div>
-                                </div>
-                                <div style="height: 12rem; background: rgba(51, 65, 85, 0.3); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem;">
-                                    <div style="height: 100%; display: flex; align-items: end; justify-content: space-between; gap: 2px;">
-                                        ${Array.from({length: Math.min(12, state.loanDetails.term)}, (_, i) => `<div style="width: 100%; background: linear-gradient(to top, #00C957, #00A844); height: ${100 - (i * 100 / state.loanDetails.term)}%;"></div>`).join('')}
-                                    </div>
-                                </div>
-                            ` : '<p style="color: #9ca3af; text-align: center; padding: 2rem;">Enter amount, APR, term to see the schedule.</p>'}
-                        </div>
-                        <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-weight: bold;">Create Loan Petition</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderLendPage() {
-            const filteredPetitions = state.searchFilter === 'All' ? mockPetitions : 
-                state.searchFilter === 'Verified' ? mockPetitions.filter(p => p.verified) :
-                state.searchFilter === 'High CORE' ? mockPetitions.filter(p => p.score >= 700) :
-                state.searchFilter === 'Low Rate' ? mockPetitions.filter(p => p.apr <= 7) : mockPetitions;
-
-            return `
-                <div style="margin-bottom: 2rem;">
-                    <input type="text" class="search-bar" placeholder="Search by borrower, purpose, or amount..." id="searchQuery" value="${state.searchQuery}">
-                    <div class="search-filters">
-                        ${['All', 'Verified', 'High CORE', 'Low Rate'].map(filter => `<button class="filter-btn ${state.searchFilter === filter ? 'active' : ''}" data-action="setFilter" data-filter="${filter}">${filter}</button>`).join('')}
-                    </div>
-                </div>
-                <div class="grid-2">
-                    ${filteredPetitions.map(p => `
-                        <div class="petition-card">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                <div style="display: flex; gap: 0.75rem;">
-                                    <div class="avatar ${p.color}">${p.initials}</div>
-                                    <div>
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <h3 style="font-weight: 600; font-size: 1.125rem;">${p.name}</h3>
-                                            ${p.verified ? '<span style="color: #00C957;">✓</span>' : ''}
-                                        </div>
-                                        <p style="font-size: 0.875rem; color: #9ca3af;">${p.timeAgo}</p>
-                                    </div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-size: 1.5rem; font-weight: bold;">$${p.amount.toLocaleString()}</div>
-                                    <div style="font-size: 0.875rem; color: #9ca3af;">${p.apr}% APR</div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 1rem;">
-                                <h4 style="font-weight: 600; margin-bottom: 0.25rem;">${p.purpose}</h4>
-                                <p style="font-size: 0.875rem; color: #9ca3af;">${p.description}</p>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.875rem;">
-                                <div><span style="color: #9ca3af;">Term</span><div style="font-weight: 600;">${p.term} months</div></div>
-                                <div><span style="color: #9ca3af;">Score</span><div style="font-weight: 600;">${p.score}</div></div>
-                                <div style="text-align: right;"><span style="color: #9ca3af;">Funded</span><div style="font-weight: 600; color: #00C957;">${p.funded}%</div></div>
-                            </div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: ${p.funded}%;"></div></div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <button class="btn btn-primary">Fund Loan</button>
-                                <button class="btn">Make Counteroffer</button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderCreditPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Extend Credit</h2>
-                <div class="grid-4" style="margin-bottom: 2rem;">
-                    <div class="card"><h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Available to Lend</h3><div style="font-size: 1.5rem; font-weight: bold; color: #00C957;">$${(state.user.checkingBalance * 0.5).toLocaleString()}</div></div>
-                    <div class="card"><h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Credit Lines Extended</h3><div style="font-size: 1.5rem; font-weight: bold;">3</div></div>
-                    <div class="card"><h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Total Credit Extended</h3><div style="font-size: 1.5rem; font-weight: bold;">$8,500</div></div>
-                    <div class="card"><h3 style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">Avg Interest Rate</h3><div style="font-size: 1.5rem; font-weight: bold;">4.2%</div></div>
-                </div>
-                <div style="max-width: 48rem;">
-                    <div class="card">
-                        <h3 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1.5rem;">Extend Credit Line</h3>
-                        <div class="form-group" style="margin-bottom: 1.5rem;">
-                            <label class="form-label">Select Verified Friend</label>
-                            <select class="form-select">
-                                <option value="">Choose a friend...</option>
-                                ${mockVerifiedFriends.map(f => `<option value="${f.id}">${f.name} (CORE: ${f.coreScore})</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 1.5rem;"><label class="form-label">Interest Rate: 5%</label><input type="range" min="0" max="30" step="0.5" value="5" style="width: 100%;"></div>
-                        <div class="form-group" style="margin-bottom: 1.5rem;"><label class="form-label">Credit Limit</label><input type="number" class="form-input" value="1000" placeholder="$"></div>
-                        <button class="btn btn-primary" style="width: 100%; padding: 1rem;">Extend Credit Line</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderMarketPage() {
-            return `
-                <div style="margin-bottom: 2rem;">
-                    <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">Note Marketplace</h2>
-                    <p style="color: #9ca3af;">Buy and sell tradeable loan notes from verified lenders</p>
-                </div>
-                <div class="grid-2">
-                    ${mockTradeableNotes.map(note => `
-                        <div class="petition-card">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                <div style="display: flex; gap: 0.75rem;">
-                                    <div class="avatar ${note.color}">${note.initials}</div>
-                                    <div>
-                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                            <h3 style="font-weight: 600; font-size: 1.125rem;">${note.borrower}</h3>
-                                            ${note.verified ? '<span style="color: #00C957;">✓</span>' : ''}
-                                        </div>
-                                        <p style="font-size: 0.875rem; color: #9ca3af;">CORE Score: ${note.score}</p>
-                                    </div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-size: 0.875rem; color: #9ca3af;">Asking Price</div>
-                                    <div style="font-size: 1.5rem; font-weight: bold; color: #00C957;">$${note.askingPrice.toLocaleString()}</div>
-                                    ${note.discount > 0 ? `<div style="font-size: 0.75rem; color: #fbbf24;">${note.discount}% discount</div>` : ''}
-                                </div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                                <span style="font-weight: 600; font-size: 0.875rem;">${note.purpose}</span>
-                                <span style="padding: 0.25rem 0.5rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-radius: 0.25rem; font-size: 0.75rem;">${note.listingType}</span>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; font-size: 0.875rem;">
-                                <div><span style="color: #9ca3af;">Original Amount</span><div style="font-weight: 600;">$${note.originalAmount.toLocaleString()}</div></div>
-                                <div><span style="color: #9ca3af;">Remaining Balance</span><div style="font-weight: 600;">$${note.remainingBalance.toLocaleString()}</div></div>
-                                <div><span style="color: #9ca3af;">APR</span><div style="font-weight: 600;">${note.apr}%</div></div>
-                                <div><span style="color: #9ca3af;">Term Remaining</span><div style="font-weight: 600;">${note.termRemaining}/${note.totalTerm} months</div></div>
-                                <div><span style="color: #9ca3af;">Payment History</span><div style="font-weight: 600; color: #00C957;">${note.paymentsOnTime}</div></div>
-                                <div><span style="color: #9ca3af;">Yield to Maturity</span><div style="font-weight: 600;">${((note.remainingBalance - note.askingPrice) / note.askingPrice * 100 / (note.termRemaining/12)).toFixed(1)}%</div></div>
-                            </div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: ${((note.totalTerm - note.termRemaining) / note.totalTerm) * 100}%;"></div></div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <button class="btn btn-primary">Purchase Note</button>
-                                <button class="btn">Send Counteroffer</button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderBankingPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Banking Connections</h2>
-                <div class="grid-2">
-                    <div class="card">
-                        <h3 style="font-weight: 600; color: #00C957; margin-bottom: 1.5rem;">Connected Accounts</h3>
-                        <div style="padding: 1rem; background: rgba(51, 65, 85, 0.3); border-radius: 0.5rem; margin-bottom: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div><p style="font-weight: 600;">Chase Checking ****1234</p><p style="font-size: 0.875rem; color: #9ca3af;">Primary Account</p></div>
-                                <div style="text-align: right;"><div style="font-size: 1.5rem; font-weight: bold; color: #00C957;">$${state.user.checkingBalance.toLocaleString()}</div><p style="font-size: 0.875rem; color: #9ca3af;">Available</p></div>
-                            </div>
-                        </div>
-                        <button class="btn" style="width: 100%; padding: 0.75rem;">+ Add Bank Account</button>
-                    </div>
-                    <div class="card">
-                        <h3 style="font-weight: 600; color: #00C957; margin-bottom: 1.5rem;">Quick Transfer</h3>
-                        <div class="form-group" style="margin-bottom: 1rem;"><label class="form-label">Amount</label><input type="number" class="form-input" placeholder="Enter amount"></div>
-                        <div class="form-group" style="margin-bottom: 1.5rem;"><label class="form-label">Direction</label><select class="form-select"><option>Deposit to Endless Wallet</option><option>Withdraw from Endless Wallet</option></select></div>
-                        <button class="btn btn-primary" style="width: 100%; padding: 0.75rem;">Transfer Funds</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCryptoPage() {
-            return `
-                <div class="card" style="max-width: 48rem; margin: 0 auto;">
-                    <div style="text-align: center; padding: 3rem 0;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">🌐</div>
-                        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Connect Your Wallet</h3>
-                        <p style="color: #9ca3af; margin-bottom: 2rem;">Connect your crypto wallet to use digital assets as collateral</p>
-                        <button class="btn btn-primary" style="padding: 0.75rem 1.5rem;">Connect Wallet</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderLoansPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Outstanding Loans</h2>
-                <div style="margin-bottom: 2rem;">
-                    <h3 style="font-size: 1.125rem; font-weight: 600; color: #9ca3af; margin-bottom: 1rem;">Loans I'm Repaying</h3>
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                            <div><h4 style="font-weight: 600; font-size: 1.125rem;">Business Expansion Loan</h4><p style="color: #9ca3af; margin-bottom: 0.5rem;">Lender: John Smith</p><span style="display: inline-block; padding: 0.25rem 0.5rem; background: rgba(0, 201, 87, 0.2); color: #00C957; border-radius: 0.25rem; font-size: 0.75rem;">Current</span></div>
-                            <div style="text-align: right;"><div style="font-size: 1.5rem; font-weight: bold;">$3,200</div><p style="font-size: 0.875rem; color: #9ca3af;">Remaining balance</p><p style="font-size: 0.875rem; color: #9ca3af;">8% APR • 8/12 months</p></div>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 67%;"></div></div>
-                        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                            <button class="btn btn-primary">Make Payment</button>
-                            <button class="btn">View Schedule</button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h3 style="font-size: 1.125rem; font-weight: 600; color: #9ca3af; margin-bottom: 1rem;">Loans Others Are Repaying to Me</h3>
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                            <div><h4 style="font-weight: 600; font-size: 1.125rem;">Emergency Medical Fund</h4><p style="color: #9ca3af; margin-bottom: 0.5rem;">Borrower: Mike Chen</p><span style="display: inline-block; padding: 0.25rem 0.5rem; background: rgba(0, 201, 87, 0.2); color: #00C957; border-radius: 0.25rem; font-size: 0.75rem;">Current</span></div>
-                            <div style="text-align: right;"><div style="font-size: 1.5rem; font-weight: bold;">$1,800</div><p style="font-size: 0.875rem; color: #9ca3af;">Expected return</p><p style="font-size: 0.875rem; color: #9ca3af;">6% APR • 3/6 months</p></div>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
-                        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                            <button class="btn">View Details</button>
-                            <button class="btn">Trade Note</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderToolboxPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Lending Toolbox</h2>
-                <div class="grid-3">
-                    <div class="card"><h3 style="font-weight: 600; margin-bottom: 0.5rem;">ROI Calculator</h3><p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">Calculate expected returns on loans</p><button class="btn btn-primary" style="width: 100%; padding: 0.5rem;">Open Tool</button></div>
-                    <div class="card"><h3 style="font-weight: 600; margin-bottom: 0.5rem;">Risk Assessment</h3><p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">Basic risk scoring for petitions</p><button class="btn btn-primary" style="width: 100%; padding: 0.5rem;">Open Tool</button></div>
-                    <div class="card"><h3 style="font-weight: 600; margin-bottom: 0.5rem;">Portfolio Summary</h3><p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">Overview of your lending portfolio</p><button class="btn btn-primary" style="width: 100%; padding: 0.5rem;">Open Tool</button></div>
-                </div>
-            `;
-        }
-
-        function renderBlogPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Investor's Blog</h2>
-                ${['Getting Started with P2P Lending', 'Risk Management Strategies', 'Market Analysis Q4 2024'].map(title => `
-                    <div class="card" style="margin-bottom: 1.5rem;">
-                        <h3 style="font-weight: 600; font-size: 1.125rem; margin-bottom: 0.5rem;">${title}</h3>
-                        <p style="color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.75rem;">Published on ${new Date().toLocaleDateString()}</p>
-                        <p style="color: #d1d5db; margin-bottom: 1rem;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                        <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.875rem; color: #00C957; border-color: #00C957;">Read More →</button>
-                    </div>
-                `).join('')}
-            `;
-        }
-
-        function renderSettingsPage() {
-            return `
-                <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Settings</h2>
-                <div class="card" style="max-width: 28rem;">
-                    <h3 style="font-weight: 600; margin-bottom: 1.5rem;">Profile Information</h3>
-                    <div class="form-group" style="margin-bottom: 1rem;"><label class="form-label">Display Name</label><input type="text" class="form-input" value="${state.user.name}" readonly></div>
-                    <div class="form-group" style="margin-bottom: 1.5rem;"><label class="form-label">Email</label><input type="email" class="form-input" value="tkdtroy@gmail.com" readonly></div>
-                    <div style="padding-top: 1rem;">
-                        <h4 style="font-weight: 600; margin-bottom: 0.5rem;">KYC Verification Status</h4>
-                        <div style="padding: 1rem; background: rgba(0, 201, 87, 0.1); border: 1px solid rgba(0, 201, 87, 0.3); border-radius: 0.5rem;">
-                            <p style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: #00C957;">✓</span> <span>Identity Verified</span></p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function calculatePayment() {
-            const { amount, apr, term } = state.loanDetails;
-            if (!amount || !apr || !term) return 0;
-            const principal = parseFloat(amount);
-            const rate = parseFloat(apr) / 100 / 12;
-            const months = parseInt(term);
-            return principal * (rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
-        }
-
-        function getCurrencySymbol(code) {
-            const allCurrencies = [...currencies.Fiat, ...currencies.Crypto];
-            const currency = allCurrencies.find(c => c.code === code);
-            return currency?.symbol || '';
-        }
-
-        function attachEventListeners() {
-            document.querySelectorAll('[data-action]').forEach(el => {
-                el.addEventListener('click', handleAction);
-            });
-
-            const loanAmount = document.getElementById('loanAmount');
-            const loanCurrency = document.getElementById('loanCurrency');
-            const loanTerm = document.getElementById('loanTerm');
-            const loanAPR = document.getElementById('loanAPR');
-            const loanRepayment = document.getElementById('loanRepayment');
-            const loanGoverningLaw = document.getElementById('loanGoverningLaw');
-            const searchQuery = document.getElementById('searchQuery');
-            const cosignerReputation = document.getElementById('cosignerReputation');
-            const cosignerFICO = document.getElementById('cosignerFICO');
-            const additionalTerms = document.getElementById('additionalTerms');
-            const otherCollateral = document.getElementById('otherCollateral');
-
-            if (loanAmount) loanAmount.addEventListener('input', updateLoanDetails);
-            if (loanCurrency) loanCurrency.addEventListener('change', updateLoanDetails);
-            if (loanTerm) loanTerm.addEventListener('input', updateLoanDetails);
-            if (loanAPR) loanAPR.addEventListener('input', updateLoanDetails);
-            if (loanRepayment) loanRepayment.addEventListener('change', updateLoanDetails);
-            if (loanGoverningLaw) loanGoverningLaw.addEventListener('input', (e) => { state.loanDetails.governingLaw = e.target.value; });
-            if (searchQuery) searchQuery.addEventListener('input', (e) => { state.searchQuery = e.target.value; render(); });
-            if (cosignerReputation) cosignerReputation.addEventListener('input', (e) => { state.loanDetails.cosignerReputation = e.target.value; });
-            if (cosignerFICO) cosignerFICO.addEventListener('input', (e) => { state.loanDetails.cosignerFICO = e.target.value; });
-            if (additionalTerms) additionalTerms.addEventListener('input', (e) => { state.loanDetails.additionalTerms = e.target.value; });
-            if (otherCollateral) otherCollateral.addEventListener('input', (e) => { state.loanDetails.otherCollateral = e.target.value; });
-        }
-
-        function handleAction(e) {
-            const action = e.target.dataset.action;
-            const view = e.target.dataset.view;
-            const field = e.target.dataset.field;
-            const value = e.target.dataset.value;
-            const filter = e.target.dataset.filter;
-            const collateral = e.target.dataset.collateral;
-
-            switch(action) {
-                case 'goToLanding': state.currentView = 'landing'; render(); break;
-                case 'goToSignin': state.currentView = 'signin'; render(); break;
-                case 'goToSignup': state.currentView = 'signup'; render(); break;
-                case 'createAccount': state.user = mockUser; state.currentView = 'onboarding'; render(); break;
-                case 'previousStep': state.onboardingStep--; render(); break;
-                case 'nextStep':
-                    if (state.onboardingStep < 4) { state.onboardingStep++; render(); }
-                    else { state.currentView = 'dashboard'; render(); }
-                    break;
-                case 'toggleMenu': state.menuOpen = !state.menuOpen; render(); break;
-                case 'navigateTo': state.currentView = view; state.menuOpen = false; render(); break;
-                case 'logout': state.user = null; state.currentView = 'landing'; render(); break;
-                case 'toggleLoanField': 
-                    if (field === 'agreeToCAPI') {
-                        state.loanDetails[field] = !state.loanDetails[field];
-                    } else {
-                        state.loanDetails[field] = value === 'true';
-                    }
-                    render(); 
-                    break;
-                case 'setFilter': state.searchFilter = filter; render(); break;
-                case 'toggleCollateral':
-                    if (state.loanDetails.collateral.includes(collateral)) {
-                        state.loanDetails.collateral = state.loanDetails.collateral.filter(c => c !== collateral);
-                    } else {
-                        state.loanDetails.collateral.push(collateral);
-                    }
-                    render();
-                    break;
-            }
-        }
-
-        function updateLoanDetails() {
-            state.loanDetails.amount = document.getElementById('loanAmount').value;
-            state.loanDetails.currency = document.getElementById('loanCurrency').value;
-            state.loanDetails.term = document.getElementById('loanTerm').value;
-            state.loanDetails.apr = document.getElementById('loanAPR').value;
-            state.loanDetails.repayment = document.getElementById('loanRepayment').value;
-            render();
-        }
-
-        render();
-        console.log('Endless Wallet loaded successfully!');
-    </script>
+  <nav class="container">
+    <div class="nav-left">
+      <div class="logo" aria-label="Endless Wallet logo"></div>
+      <div class="brand">Endless Wallet</div>
+    </div>
+    <div class="nav-right">
+      <button class="btn">Sign In</button>
+      <button class="btn btn-primary">Get Started</button>
+    </div>
+  </nav>
+  <section class="hero container">
+    <h1>Peer‑to‑Peer Lending Reinvented</h1>
+    <p>Connect borrowers and lenders in a secure, transparent marketplace. Access opportunities, build trust, and grow your financial future.</p>
+    <div class="button-group">
+      <button class="btn btn-primary">Explore Lending</button>
+      <button class="btn">Learn More</button>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure Transactions</h3>
+        <p>All deals are protected with industry‑leading security and encryption.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <h3>Trusted Network</h3>
+        <p>Work with verified lenders and borrowers to build a strong community.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Fast Approvals</h3>
+        <p>Get matched quickly and easily with a streamlined approval process.</p>
+      </div>
+    </div>
+  </section>
+  <div class="form-container">
+    <div class="form-card">
+      <form>
+        <div class="form-group">
+          <label for="email">Stay Updated:</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" style="width:100%; padding:0.5rem; border-radius:0.5rem; border:none;" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Subscribe</button>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
